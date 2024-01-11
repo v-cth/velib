@@ -1,0 +1,31 @@
+version: 1
+
+sources:
+  - name: velib
+    database: portfolio-402
+    schema: raw_data
+    freshness: 
+      warn_after: {count: 24, period: hour}
+      error_after: {count: 48, period: hour}
+    loaded_at_field: created_at
+    tables:
+      - name: bike_avaibility
+
+models:
+  - name: dim_station
+    columns:
+      - name: station_code
+        tests:
+        - not_null
+        - unique
+      - name: station_name
+        tests:
+        - not_null
+  - name: fct_avaibility
+    columns:
+      - name: station_code
+        tests:
+        - relationships:
+            field: station_code
+            to: ref('dim_station')
+      
